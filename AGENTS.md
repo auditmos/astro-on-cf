@@ -83,10 +83,14 @@ Run manually before declaring done:
 </important>
 
 <important if="you are writing or modifying tests">
-- Tests live next to source as `*.test.ts`
+- Tests live next to source as `*.test.ts`, mirrored name (`foo.ts` ↔ `foo.test.ts`)
 - Vitest with globals enabled — no need to import `describe` / `it` / `expect`
+- Globals are typed via `"vitest/globals"` in `tsconfig.json` (`types` array)
 - Path alias `@` resolves to `src/`
-- `src/pages/**` excluded from test discovery (test the endpoint logic via extracted helpers)
+- `src/pages/**` excluded from test discovery — extract endpoint logic into a `src/lib/` or `src/<domain>/` module and test that instead
+- **Test only the module's public boundary** (exported functions), not internals — see `.claude/rules/deep-modules.md`
+- **Pure functions only** in unit tests. For code that touches fs / network / process, extract a pure helper and test it; cover the side-effecting orchestrator with a separate integration test (none ship by default)
+- Reference: `scripts/init-project-lib.test.ts` shows the convention — `describe` per exported function, `it.each` for parametric cases
 </important>
 
 <important if="you are creating or reviewing design documents">

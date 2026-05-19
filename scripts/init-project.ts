@@ -14,6 +14,8 @@ import fs from "node:fs";
 import path from "node:path";
 import readline from "node:readline";
 import { fileURLToPath } from "node:url";
+import { isValidProjectName, missingWranglerEnvs, stripJsonc, symbolFor } from "./init-project-lib";
+import type { FanoutResult, RenameResult } from "./init-project-types";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ORIGINAL_WORKER_NAME = "astro-on-cf";
@@ -23,8 +25,6 @@ type RenameTarget =
 	| { file: string; mode: "package-name" }
 	| { file: string; mode: "all-occurrences"; needle: string };
 type EnvTemplate = { template: string; target: string };
-type RenameResult = "renamed" | "skipped" | "missing";
-type FanoutResult = "copied" | "skipped" | "no-template";
 
 const RENAME_TARGETS: RenameTarget[] = [
 	{ file: "package.json", mode: "package-name" },
@@ -189,10 +189,6 @@ function applyRename(target: RenameTarget, name: string): RenameResult {
 	return renameAllOccurrences(file, name, target.needle);
 }
 
-function stripJsonc(content: string): string {
-	return content.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
-}
-
 function checkWranglerEnvs(file: string, required: string[]): string[] {
 	if (!fs.existsSync(file)) return [`${file}: file not found`];
 	let parsed: { env?: Record<string, unknown> };
@@ -203,8 +199,7 @@ function checkWranglerEnvs(file: string, required: string[]): string[] {
 	} catch (e) {
 		return [`${file}: parse failed (${(e as Error).message.split("\n")[0]})`];
 	}
-	const envs = parsed.env ?? {};
-	return required.filter((e) => !envs[e]).map((e) => `${file}: missing env.${e}`);
+	return missingWranglerEnvs(parsed, required).map((e) => `${file}: missing env.${e}`);
 }
 
 function fanoutEnv(template: string, target: string): FanoutResult {
@@ -215,12 +210,6 @@ function fanoutEnv(template: string, target: string): FanoutResult {
 	fs.mkdirSync(path.dirname(targetPath), { recursive: true });
 	fs.copyFileSync(templatePath, targetPath);
 	return "copied";
-}
-
-function symbolFor(result: RenameResult | FanoutResult): string {
-	if (result === "renamed" || result === "copied") return "✓";
-	if (result === "skipped") return "·";
-	return "✗";
 }
 
 function ensureFile(relPath: string, contents: string): "created" | "skipped" {
@@ -354,7 +343,7 @@ async function main(): Promise<void> {
 	let withDb = argv.includes(WITH_DB_FLAG);
 
 	const name = await prompt("Project name (kebab-case): ");
-	if (!/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(name)) {
+	if (!isValidProjectName(name)) {
 		console.error("✗ Invalid name. Must be kebab-case (e.g. my-app).");
 		process.exit(1);
 	}
