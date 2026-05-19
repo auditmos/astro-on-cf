@@ -2,6 +2,7 @@
 dist/
 # generated types
 .astro/
+worker-configuration.d.ts
 
 # dependencies
 node_modules/
@@ -12,10 +13,18 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-
 # environment variables
 .env
-.env.production
+.env.*
+!.env.example
+
+# per-environment vars (dotenvx + wrangler)
+.dev.vars
+.staging.vars
+.production.vars
+!.dev.vars.example
+!.staging.vars.example
+!.production.vars.example
 
 # macOS-specific files
 .DS_Store
@@ -24,7 +33,12 @@ pnpm-debug.log*
 .idea/
 
 # wrangler files
-.wrangler
-.dev.vars*
-!.dev.vars.example
-!.env.example
+.wrangler/
+
+# test / coverage
+coverage/
+
+# Claude Code local state
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+.claude/skills/
