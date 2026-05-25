@@ -52,7 +52,13 @@
 			"suspicious": {
 				"noExplicitAny": "error",
 				"noConsole": "warn"
+			},
+			"nursery": {
+				"noFloatingPromises": "error"
 			}
+		},
+		"domains": {
+			"project": "recommended"
 		}
 	},
 	"assist": {
@@ -83,6 +89,17 @@
 					}
 				}
 			}
+		},
+		{
+			"includes": ["src/__fixtures__/**"],
+			"linter": {
+				"rules": {
+					"recommended": false,
+					"nursery": {
+						"noFloatingPromises": "error"
+					}
+				}
+			}
 		}
 	],
 	"files": {
@@ -100,7 +117,8 @@
 			"!.claude/settings.local.json",
 			"!.claude/skills",
 			"!.codex",
-			"!CHANGELOG.md"
+			"!CHANGELOG.md",
+			"!src/__fixtures__"
 		]
 	},
 	"plugins": [

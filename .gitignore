@@ -45,3 +45,6 @@ coverage/
 
 # Codex local state
 .codex/
+
+# Biome fixture staging (test-time only; cleaned up in try/finally)
+src/.biome-fixture-staging-*
