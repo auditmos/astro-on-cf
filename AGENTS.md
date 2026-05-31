@@ -54,7 +54,7 @@ pnpm deps:major           # show major updates
 pnpm release              # semantic-release (CI only)
 ```
 
-If `--with-db` was passed during `init-project`, you also get `db:generate:{dev,staging,production}`, `db:migrate:*`, `db:pull:*`, `db:studio`, and `db:seed:*` — all wired through `dotenvx run -f .{env}.vars`.
+If `--with-db` was passed during `init-project`, you also get `db:generate:{dev,staging,production}`, `db:migrate:*`, `db:pull:*`, `db:studio`, and `db:seed:*` — all wired through `dotenvx run -f .dev.vars{,.staging,.production}`.
 
 ## Architecture
 
@@ -68,7 +68,7 @@ Access bindings through `import { env } from "cloudflare:workers"` — this is t
 
 `wrangler.jsonc` ships with three env blocks (`dev`, `staging`, `production`) — each gets its own Worker name. Deploy a specific env with `wrangler deploy --env <name>`.
 
-Per-env secrets live in `.dev.vars` / `.staging.vars` / `.production.vars` locally (never committed) and as Cloudflare secrets in production (`wrangler secret put`).
+Per-env secrets live in `.dev.vars` / `.dev.vars.staging` / `.dev.vars.production` locally (never committed) and as Cloudflare secrets in production (`wrangler secret put`). This matches the wrangler convention — `.dev.vars.<env>` is loaded ahead of `.dev.vars` when `CLOUDFLARE_ENV=<env>` is set.
 
 ## Verification
 

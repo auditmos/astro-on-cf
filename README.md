@@ -10,7 +10,7 @@ Use it as the starting point for your next project — clone it, rename it, deci
 
 1. Click **Use this template** on GitHub (or `gh repo create --template`).
 2. `pnpm install`.
-3. `pnpm run init-project` — prompts for a kebab-case project name, renames `wrangler.jsonc` + `package.json`, and fans out `.env.example` → `.env` and `.{dev,staging,production}.vars.example` → `.dev.vars` / `.staging.vars` / `.production.vars`. Pass `--with-db` to add the Drizzle/Neon data layer scaffolding. Idempotent — re-runnable, never overwrites filled-in files.
+3. `pnpm run init-project` — prompts for a kebab-case project name, renames `wrangler.jsonc` + `package.json`, and fans out `.env.example` → `.env` and `.dev.vars{,.staging,.production}.example` → `.dev.vars` / `.dev.vars.staging` / `.dev.vars.production`. Pass `--with-db` to add the Drizzle/Neon data layer scaffolding. Idempotent — re-runnable, never overwrites filled-in files.
 4. *(Only if `--with-db`)* Provision a Neon database and fill `DATABASE_HOST/USERNAME/PASSWORD` in `.dev.vars` (and the staging/production variants when you deploy them).
 5. Run `pnpm cf-typegen && pnpm dev`.
 
@@ -113,7 +113,7 @@ In Astro v6 + `@astrojs/cloudflare` v13 the `Astro.locals.runtime` proxy is gone
 
 ### Secrets & environments
 
-Per-environment vars live in `.dev.vars` / `.staging.vars` / `.production.vars`, never committed. For staging/production, mirror the same keys as Cloudflare secrets via `wrangler secret put --env <name>`.
+Per-environment vars live in `.dev.vars` / `.dev.vars.staging` / `.dev.vars.production`, never committed. This matches the wrangler convention — `.dev.vars.<env>` is loaded ahead of `.dev.vars` when `CLOUDFLARE_ENV=<env>` is set ([docs](https://developers.cloudflare.com/workers/configuration/secrets/#local-development-with-secrets)). For staging/production, mirror the same keys as Cloudflare secrets via `wrangler secret put --env <name>`.
 
 ## Optional: Drizzle + Neon data layer
 
@@ -122,7 +122,7 @@ Re-run `pnpm run init-project --with-db` (or pass the flag the first time) to sc
 - `drizzle-{dev,staging,production}.config.ts`
 - `src/db/{client,health,schema.ts,setup.ts}`
 - `db:*` scripts wired through `@dotenvx/dotenvx`
-- `DATABASE_HOST/USERNAME/PASSWORD` keys in every `.{env}.vars.example`
+- `DATABASE_HOST/USERNAME/PASSWORD` keys in every `.dev.vars{,.staging,.production}.example`
 
 Same conventions as `tstack-on-cf` and `hono-on-cf`: domain-per-folder, narrow public API, per-env migration directories.
 
