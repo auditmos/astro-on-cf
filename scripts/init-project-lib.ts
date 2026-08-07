@@ -28,9 +28,61 @@ export const RENAME_TARGETS: readonly RenameTarget[] = [
  * Strip JSON-with-comments down to plain JSON so JSON.parse can handle it.
  * Handles both block and line comments. Does NOT handle trailing commas
  * (drizzle-kit / wrangler don't emit them in our templates).
+ *
+ * Scans rather than regex-replaces because a comment marker is only a comment
+ * outside a string: `"https://unpkg.com/..."` and `"src/**\/*.ts"` are values,
+ * and the previous regex truncated both, producing unparseable JSON from a
+ * perfectly valid config.
  */
+/** Index just past the string literal whose opening quote sits at `openQuote`. */
+function endOfString(content: string, openQuote: number): number {
+	let index = openQuote + 1;
+	while (index < content.length) {
+		// Skip escape pairs whole, so a `\"` never reads as the closing quote.
+		if (content[index] === "\\") {
+			index += 2;
+			continue;
+		}
+		if (content[index] === '"') return index + 1;
+		index += 1;
+	}
+	return index;
+}
+
+/** Index just past the comment starting at `start`, for either comment style. */
+function endOfComment(content: string, start: number): number {
+	if (content[start + 1] === "/") {
+		const newline = content.indexOf("\n", start);
+		return newline === -1 ? content.length : newline;
+	}
+	const close = content.indexOf("*/", start + 2);
+	return close === -1 ? content.length : close + 2;
+}
+
 export function stripJsonc(content: string): string {
-	return content.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+	let result = "";
+	let index = 0;
+
+	while (index < content.length) {
+		const char = content[index] as string;
+
+		if (char === '"') {
+			const end = endOfString(content, index);
+			result += content.slice(index, end);
+			index = end;
+			continue;
+		}
+
+		if (char === "/" && (content[index + 1] === "/" || content[index + 1] === "*")) {
+			index = endOfComment(content, index);
+			continue;
+		}
+
+		result += char;
+		index += 1;
+	}
+
+	return result;
 }
 
 /**

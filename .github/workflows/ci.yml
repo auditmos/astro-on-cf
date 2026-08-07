@@ -41,7 +41,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: lts/*
+          # Explicit rather than lts/*: the engines floor, the @types/node major and
+          # the version CI runs have to agree, and lts/* silently walks away from them
+          # the day a new LTS lands — which is how they drifted apart before.
+          # scripts/repo-hygiene.test.ts fails when the three disagree, so moving Node
+          # majors is one reviewed edit instead of a surprise on a Tuesday.
+          node-version: "24"
           cache: pnpm
 
       - name: Install dependencies

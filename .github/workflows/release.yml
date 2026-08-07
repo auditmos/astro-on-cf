@@ -41,7 +41,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: lts/*
+          # Explicit rather than lts/* — see the rationale in ci.yml. The three
+          # declarations of the Node major are asserted together by
+          # scripts/repo-hygiene.test.ts.
+          node-version: "24"
           cache: pnpm
 
       - name: Install dependencies

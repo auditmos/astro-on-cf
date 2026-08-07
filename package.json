@@ -5,7 +5,7 @@
 	"type": "module",
 	"packageManager": "pnpm@10.34.5",
 	"engines": {
-		"node": ">=22.12.0"
+		"node": ">=24.0.0"
 	},
 	"scripts": {
 		"prepare": "simple-git-hooks && wrangler types",
@@ -43,10 +43,10 @@
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.10",
-		"@biomejs/biome": "2.4.4",
+		"@biomejs/biome": "^2.4.4",
 		"@semantic-release/changelog": "^6.0.3",
 		"@semantic-release/git": "^10.0.1",
-		"@types/node": "^22.20.1",
+		"@types/node": "^24.13.3",
 		"@vitest/coverage-v8": "^4.1.10",
 		"execa": "^9.6.1",
 		"knip": "^6.31.0",

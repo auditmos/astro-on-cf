@@ -48,6 +48,26 @@ describe("stripJsonc", () => {
 		const input = `{"a":1,"b":[true,null]}`;
 		expect(stripJsonc(input)).toBe(input);
 	});
+
+	// A `//` inside a string is not a comment. knip.jsonc declares an https
+	// `$schema`, and a naive stripper truncated it to `"https:` and produced
+	// unparseable JSON — silently, at the first config that used a URL.
+	it("keeps a // that lives inside a string", () => {
+		const input = `{"$schema":"https://unpkg.com/knip@6/schema.json"} // note`;
+		expect(JSON.parse(stripJsonc(input))).toEqual({
+			$schema: "https://unpkg.com/knip@6/schema.json",
+		});
+	});
+
+	it("keeps a /* that lives inside a string", () => {
+		const input = `{"glob":"src/**/*.ts"}`;
+		expect(JSON.parse(stripJsonc(input))).toEqual({ glob: "src/**/*.ts" });
+	});
+
+	it("is not fooled by an escaped quote before a //", () => {
+		const input = String.raw`{"a":"say \"hi\" // not a comment"}`;
+		expect(JSON.parse(stripJsonc(input))).toEqual({ a: `say "hi" // not a comment` });
+	});
 });
 
 describe("isValidProjectName", () => {
