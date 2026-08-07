@@ -64,9 +64,10 @@ src/
 ├── pages/                       # File-based routes
 │   ├── index.astro              # Landing page
 │   └── api/                     # API endpoints (./api/<name>.ts)
+│       └── health.ts            # Exemplar: parse, delegate, respond
+├── health/                      # The pure module it delegates to, plus its tests
 ├── layouts/
 │   └── Layout.astro             # Shared HTML shell
-├── components/                  # Reusable Astro components
 ├── styles/
 │   └── globals.css              # Tailwind v4 entry
 └── env.d.ts                     # App.Locals typed against CF Env
@@ -74,29 +75,35 @@ src/
 
 Path alias `@/*` resolves to `src/*`.
 
+Reusable components get their own folder under `src/` when a second page needs one,
+and a domain module gets `src/<domain>/` when the domain appears — following
+`src/health/`. The template ships no empty directories waiting to be filled.
+`docs/` holds business requirements and design docs; `plans/` holds phased
+implementation plans.
+
 ## Cloudflare Integration
 
-### `wrangler.jsonc`
+### Worker configuration
 
-```jsonc
-{
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "astro-on-cf",
-  "main": "@astrojs/cloudflare/entrypoints/server",
-  "compatibility_date": "2025-09-02",
-  "compatibility_flags": ["nodejs_compat"],
-  "assets": { "directory": "./dist", "binding": "ASSETS" },
-  "observability": { "enabled": true },
-  "env": {
-    "dev":        { "name": "astro-on-cf-dev" },
-    "staging":    { "name": "astro-on-cf-staging" },
-    "production": { "name": "astro-on-cf-production" }
-  }
-}
-```
+[`wrangler.jsonc`](./wrangler.jsonc) is the source of truth — read the values there,
+not here. This README used to reproduce the file inline, which meant the weekly
+dependency bot bumped the real compatibility date and left the copy a little more
+wrong every time. The copy is gone rather than synced: teaching the bot to rewrite
+prose automates a problem better deleted. `scripts/docs-truth.test.ts` fails if a
+copy is reintroduced.
 
-- Use `wrangler.jsonc` (not `.toml`).
-- Prefer `custom_domain: true` over routes with `zone_name` — see `.claude/rules/cloudflare-deployment.md`.
+What the file declares:
+
+- Worker name, entrypoint, compatibility date and flags (`nodejs_compat`)
+- `assets` — `./dist` served through the `ASSETS` binding
+- `observability` with an explicit head sampling rate, plus source map upload
+- Three `env` blocks — `dev`, `staging`, `production` — one Worker each
+- Commented example blocks for the bindings you are most likely to add next
+
+Conventions:
+
+- Use `wrangler.jsonc`, not `.toml`.
+- Prefer `custom_domain: true` over routes with `zone_name` — see [`.claude/rules/cloudflare-deployment.md`](./.claude/rules/cloudflare-deployment.md).
 - Run `pnpm cf-typegen` whenever you add bindings to regenerate `worker-configuration.d.ts`.
 
 ### Accessing bindings
