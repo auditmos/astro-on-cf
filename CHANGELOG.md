@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/auditmos/astro-on-cf/compare/v1.2.0...v1.3.0) (2026-08-07)
+
+
+### Features
+
+* **api:** ship the exemplar health endpoint and module ([d3f96e3](https://github.com/auditmos/astro-on-cf/commit/d3f96e3d95e238b1edd0c24de1c84b0646a69e3b)), closes [#21](https://github.com/auditmos/astro-on-cf/issues/21)
+
 # [1.2.0](https://github.com/auditmos/astro-on-cf/compare/v1.1.2...v1.2.0) (2026-08-07)
 
 
