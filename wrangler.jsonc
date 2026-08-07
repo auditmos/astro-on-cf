@@ -12,6 +12,10 @@
 		"enabled": true,
 		"head_sampling_rate": 1
 	},
+	// Uploads the .js.map files emitted by the build (astro.config.mjs sets
+	// vite.build.sourcemap) so observability traces name real source lines
+	// instead of minified output.
+	"upload_source_maps": true,
 	"vars": {
 		"CLOUDFLARE_ENV": "dev"
 	},

@@ -21,7 +21,7 @@ See [Quick Start](#quick-start) below for the dev-loop commands.
 - **Edge-first** — Astro `output: "server"` running on Cloudflare Workers via `@astrojs/cloudflare`. Bindings typed automatically through `worker-configuration.d.ts`.
 - **No framework lock-in** — pure Astro by default. Add React/Vue/Svelte islands per project with `pnpm astro add <integration>` only when you actually need them.
 - **Type-safe end-to-end** — `astro check` + strict TypeScript, Zod at every endpoint boundary, typed Cloudflare `Env`.
-- **Three-env wrangler** — `dev`, `staging`, `production` blocks shipped out of the box. Deploy with `wrangler deploy --env <name>`.
+- **Three-env wrangler** — `dev`, `staging`, `production` blocks shipped out of the box, one Worker each. Deploy with `pnpm deploy:staging` / `pnpm deploy:production`.
 - **Agent-friendly** — project rules in `.claude/rules/` activate automatically based on the files you touch. Mirrors the conventions of every other Auditmos template repo (`saas-on-cf`, `tstack-on-cf`, `hono-on-cf`).
 
 ## Quick Start
@@ -46,7 +46,7 @@ The app runs on http://localhost:3000.
 | `pnpm dev` | Dev server on port 3000 (Astro + Vite) |
 | `pnpm build` | Production build to `./dist` |
 | `pnpm preview` | Preview the production build locally |
-| `pnpm deploy` | Build and deploy to Cloudflare Workers |
+| `pnpm deploy:dev` / `pnpm deploy:staging` / `pnpm deploy:production` | Build and deploy to the named Cloudflare environment |
 | `pnpm cf-typegen` | Generate `Env` types from `wrangler.jsonc` |
 | `pnpm test` / `pnpm test:watch` / `pnpm test:coverage` | Vitest |
 | `pnpm types` | `astro check` + `tsc --noEmit` |
@@ -114,6 +114,18 @@ In Astro v6 + `@astrojs/cloudflare` v13 the `Astro.locals.runtime` proxy is gone
 ### Secrets & environments
 
 Per-environment vars live in `.dev.vars` / `.dev.vars.staging` / `.dev.vars.production`, never committed. This matches the wrangler convention — `.dev.vars.<env>` is loaded ahead of `.dev.vars` when `CLOUDFLARE_ENV=<env>` is set ([docs](https://developers.cloudflare.com/workers/configuration/secrets/#local-development-with-secrets)). For staging/production, mirror the same keys as Cloudflare secrets via `wrangler secret put --env <name>`.
+
+### Deploying
+
+```bash
+pnpm deploy:dev         # build + wrangler deploy --env dev
+pnpm deploy:staging     # build + wrangler deploy --env staging
+pnpm deploy:production  # build + wrangler deploy --env production
+```
+
+Every deploy command names its environment, and there is deliberately no environment-less one. The old bare script was unreachable — `deploy` is a pnpm built-in (workspace deploy), so the package manager answered instead of the script — and the wrangler invocation it wrapped published to the *top-level* Worker, which none of the three `env` blocks owns. That is a fourth live Worker nobody manages. `scripts/deploy-scripts.test.ts` fails if such a script is reintroduced.
+
+**Deploys are manual by design.** CI gates lint, types, tests, dead code and the production build, but never ships — a template its consumers clone must not demand a `CLOUDFLARE_API_TOKEN` they have not created. To automate it for your own project, add a workflow step running one of the commands above with `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in the job environment; see [Wrangler CI/CD](https://developers.cloudflare.com/workers/wrangler/ci-cd/).
 
 ## Optional: Drizzle + Neon data layer
 

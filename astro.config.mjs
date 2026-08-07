@@ -9,5 +9,8 @@ export default defineConfig({
 	adapter: cloudflare(),
 	vite: {
 		plugins: [tailwindcss()],
+		// Emits .js.map alongside the Worker bundle. wrangler.jsonc sets
+		// upload_source_maps so production stack traces resolve to source.
+		build: { sourcemap: true },
 	},
 });

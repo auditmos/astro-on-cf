@@ -36,7 +36,9 @@ Astro (SSR) on Cloudflare Workers, with Tailwind v4 and an optional Drizzle + Ne
 pnpm dev                  # dev server on http://localhost:3000
 pnpm build                # production build to ./dist
 pnpm preview              # preview the production build locally
-pnpm deploy               # build + wrangler deploy
+pnpm deploy:dev           # build + wrangler deploy --env dev
+pnpm deploy:staging       # build + wrangler deploy --env staging
+pnpm deploy:production    # build + wrangler deploy --env production
 pnpm cf-typegen           # regenerate Env types from wrangler.jsonc
 
 pnpm test                 # vitest run
@@ -66,7 +68,7 @@ Technology-specific rules live in `.claude/rules/`. Activate automatically when 
 
 Access bindings through `import { env } from "cloudflare:workers"` — this is the only supported pattern in Astro v6 + `@astrojs/cloudflare` v13 (the old `Astro.locals.runtime.env` was removed). `env` is typed against `worker-configuration.d.ts`. After editing `wrangler.jsonc` bindings, run `pnpm cf-typegen`.
 
-`wrangler.jsonc` ships with three env blocks (`dev`, `staging`, `production`) — each gets its own Worker name. Deploy a specific env with `wrangler deploy --env <name>`.
+`wrangler.jsonc` ships with three env blocks (`dev`, `staging`, `production`) — each gets its own Worker name. Deploy with `pnpm deploy:staging` / `pnpm deploy:production`. There is no environment-less deploy script: an unqualified deploy publishes to the top-level Worker that no `env` block owns, and `scripts/deploy-scripts.test.ts` fails if one is added back. Deploys are manual by design — CI gates the build but never ships.
 
 Per-env secrets live in `.dev.vars` / `.dev.vars.staging` / `.dev.vars.production` locally (never committed) and as Cloudflare secrets in production (`wrangler secret put`). This matches the wrangler convention — `.dev.vars.<env>` is loaded ahead of `.dev.vars` when `CLOUDFLARE_ENV=<env>` is set.
 
