@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/auditmos/astro-on-cf/compare/v1.3.0...v1.3.1) (2026-08-07)
+
+
+### Bug Fixes
+
+* **docs:** make the repository's claims about itself true ([190daf8](https://github.com/auditmos/astro-on-cf/commit/190daf8b453942fc30baf05185066fdb08a43fc0)), closes [#21](https://github.com/auditmos/astro-on-cf/issues/21) [#22](https://github.com/auditmos/astro-on-cf/issues/22)
+
 # [1.3.0](https://github.com/auditmos/astro-on-cf/compare/v1.2.0...v1.3.0) (2026-08-07)
 
 
