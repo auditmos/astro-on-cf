@@ -1,0 +1,15 @@
+{
+	"$schema": "https://unpkg.com/knip@6/schema.json",
+	"entry": ["src/pages/**/*.{astro,ts}", "scripts/*.ts", "taze.config.ts"],
+	"project": ["src/**/*.{ts,tsx,astro}", "scripts/**/*.ts"],
+	"ignore": ["src/__fixtures__/**"],
+	"ignoreDependencies": [
+		"cloudflare",
+		"tailwindcss",
+		// Stack dependency, not an exemplar dependency: the endpoint rules and the
+		// README both prescribe Zod at every boundary, so it must outlive the one
+		// endpoint that currently imports it. Without this, deleting the exemplar
+		// (src/health/ + src/pages/api/health.ts) turns knip red on an unused dep.
+		"zod"
+	]
+}
