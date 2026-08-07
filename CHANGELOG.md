@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/auditmos/astro-on-cf/compare/v1.3.2...v1.4.0) (2026-08-07)
+
+
+### Features
+
+* **cloudflare:** make the adapter's implicit decisions explicit ([b90a9fb](https://github.com/auditmos/astro-on-cf/commit/b90a9fbddbc28bffc32823879445ee401baaf08a)), closes [#24](https://github.com/auditmos/astro-on-cf/issues/24)
+
 ## [1.3.2](https://github.com/auditmos/astro-on-cf/compare/v1.3.1...v1.3.2) (2026-08-07)
 
 
