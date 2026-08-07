@@ -52,7 +52,8 @@
 		"tsx": "^4.23.5",
 		"typescript": "^5.9.3",
 		"vitest": "^4.1.10",
-		"wrangler": "^4.118.0"
+		"wrangler": "^4.118.0",
+		"yaml": "^2.9.0"
 	},
 	"overrides": {
 		"vite": "^7.3.6"

@@ -1,17 +1,18 @@
-name: Release
+name: CI
 
 on:
+  pull_request:
   push:
     branches: [main]
 
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+  contents: read
 
 concurrency:
-  group: release
-  cancel-in-progress: false
+  # One run per ref. Superseded pushes to an open PR are cancelled; main is not,
+  # so every commit that can be released has its own recorded result.
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   # Future-proof: opt into Node 24 for JS actions before GH forces it (2026-06-02 default, 2026-09-16 hard cutoff)
@@ -24,15 +25,14 @@ env:
   SKIP_SIMPLE_GIT_HOOKS: "1"
 
 jobs:
-  release:
-    name: Release
+  checks:
+    name: Checks
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          fetch-depth: 0
           persist-credentials: false
 
       - name: Setup pnpm
@@ -59,18 +59,9 @@ jobs:
       - name: Knip
         run: pnpm run knip
 
-      # Same gate as ci.yml: never cut a release from a tree that does not
-      # build for production, even if every type and unit check passed.
+      # The gate this workflow exists for. `astro check` + `tsc` type-check the
+      # sources but never run the adapter, so a change that breaks production
+      # compilation (bad CSS import, adapter-incompatible dependency, failing
+      # Vite plugin) passes every check above and fails only here.
       - name: Build
         run: pnpm run build
-
-      # Runs semantic-release. Conventional Commits → version bump:
-      #   feat:                                            → minor
-      #   fix: / perf: / revert: / refactor:               → patch
-      #   BREAKING CHANGE: footer (or `!` after type)      → major
-      #   docs: / chore: / ci: / style: / test: / build:   → no release
-      # Full rule set in .releaserc.json (commit-analyzer plugin).
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release

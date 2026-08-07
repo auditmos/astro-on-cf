@@ -62,10 +62,20 @@ jobs:
       - name: Knip
         run: pnpm run knip
 
+      # Same gate as ci.yml: a bump that breaks the production build must not
+      # reach a PR looking green.
+      - name: Build
+        run: pnpm run build
+
       - name: Open PR
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # GitHub suppresses workflow runs for events raised by the default
+          # GITHUB_TOKEN, so a PR opened with it shows no checks at all. Set a
+          # DEPS_UPDATE_TOKEN repo secret (fine-grained PAT, contents +
+          # pull-requests write) and these PRs run the same CI as human ones.
+          # Falls back to GITHUB_TOKEN so a fresh clone still works untouched.
+          token: ${{ secrets.DEPS_UPDATE_TOKEN || secrets.GITHUB_TOKEN }}
           branch: chore/deps-update
           delete-branch: true
           commit-message: "chore(deps): weekly minor + patch bumps"
@@ -79,10 +89,12 @@ jobs:
             - `pnpm types`
             - `pnpm test`
             - `pnpm knip`
+            - `pnpm build`
 
-            Note: `secrets.GITHUB_TOKEN` does not trigger CI on PRs it
-            creates. To run CI on this PR, click "Re-run all jobs" or push
-            an empty commit.
+            CI re-runs the same checks on this PR when a `DEPS_UPDATE_TOKEN`
+            secret is configured. Without it the PR falls back to
+            `secrets.GITHUB_TOKEN`, which GitHub does not let trigger
+            workflows — push an empty commit or click "Re-run all jobs".
 
             Close this PR if anything looks off and run the bumps manually.
           labels: dependencies, automated
