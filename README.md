@@ -1,6 +1,6 @@
 # Astro on Cloudflare
 
-*AI agent index: [llms.txt](./llms.txt)*
+*AI agent index: [llms.txt](./llms.txt) — generated from `AGENTS.md` and `.claude/` by `pnpm gen:llms-txt`, served at `/llms.txt`*
 
 A production-ready **template** for building content-first sites and SSR apps on Cloudflare Workers with Astro. Ships with Tailwind CSS v4, native Astro API endpoints, a strict Biome + Vitest toolchain, an optional Drizzle + Neon data layer, and the full Auditmos baseline (simple-git-hooks, knip, taze, semantic-release, `.claude/` rules).
 
@@ -146,6 +146,7 @@ This template is set up for agent-assisted development:
 - `.claude/rules/` — topic rules (`general.md`, `deep-modules.md`, `error-handling.md`, `atomic-imports.md`, `cloudflare-deployment.md`, plus `frontend/{astro,tailwind-v4}.md` and `api/{cloudflare-workers,astro-endpoints}.md`) that activate automatically based on the files being edited.
 - `.claude/agents/` — `dd-w` (design-doc writer), `dd-i` (design-doc implementer), `mvp-e` (MVP enforcer).
 - `/docs` — single source of truth for business requirements / design docs.
+- `llms.txt` — the agent index, **generated** from the two above by `pnpm gen:llms-txt`. `public/llms.txt` symlinks to it so a deployed clone serves it at `/llms.txt`; there is no second copy to keep in sync. A drift test fails if the committed file falls behind the tree.
 
 ## Learn More
 

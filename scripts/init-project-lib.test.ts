@@ -14,7 +14,25 @@
  *     `main()` and mocking fs.
  */
 
-import { isValidProjectName, missingWranglerEnvs, stripJsonc, symbolFor } from "./init-project-lib";
+import {
+	isValidProjectName,
+	missingWranglerEnvs,
+	RENAME_TARGETS,
+	stripJsonc,
+	symbolFor,
+} from "./init-project-lib";
+
+describe("RENAME_TARGETS", () => {
+	const files = RENAME_TARGETS.map((target) => target.file);
+
+	it.each([
+		"package.json",
+		"wrangler.jsonc",
+		"llms.txt",
+	])("rewrites the project name in %s during scaffolding", (file) => {
+		expect(files).toContain(file);
+	});
+});
 
 describe("stripJsonc", () => {
 	it("removes line comments", () => {

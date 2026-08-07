@@ -7,7 +7,22 @@
  * in init-project.ts.
  */
 
-import type { FanoutResult, RenameResult } from "./init-project-types";
+import type { FanoutResult, RenameResult, RenameTarget } from "./init-project-types";
+
+/** The template's own name, carried by every file listed in RENAME_TARGETS. */
+export const ORIGINAL_WORKER_NAME = "astro-on-cf";
+
+/**
+ * Every file that carries the project name and must be rewritten during
+ * scaffolding. llms.txt is generated from the tree but ships pre-built, so a
+ * scaffolded project would otherwise announce itself as the template until
+ * someone ran `pnpm gen:llms-txt`.
+ */
+export const RENAME_TARGETS: readonly RenameTarget[] = [
+	{ file: "package.json", mode: "package-name" },
+	{ file: "wrangler.jsonc", mode: "all-occurrences", needle: ORIGINAL_WORKER_NAME },
+	{ file: "llms.txt", mode: "all-occurrences", needle: ORIGINAL_WORKER_NAME },
+];
 
 /**
  * Strip JSON-with-comments down to plain JSON so JSON.parse can handle it.

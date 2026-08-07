@@ -1,43 +1,35 @@
-# tstack-on-cf
+# astro-on-cf
 
-> TanStack Start frontend + Hono API backend on Cloudflare Workers (single-app, no monorepo).
+> Astro (SSR) on Cloudflare Workers, with Tailwind v4 and an optional Drizzle + Neon data layer enabled by `pnpm run init-project --with-db`.
 
 ## Project
 
-- [Project overview](AGENTS.md): Stack, project structure, scripts, conventions
+- [Project overview](AGENTS.md): Stack, Project Structure, Commands, Architecture, Cloudflare runtime, Verification
 
 ## Rules
 
 ### General
-- [General TypeScript & Cloudflare](.claude/rules/general.md): Type safety, error handling, naming, array access, bug fix workflow
-- [Cloudflare Deployment](.claude/rules/cloudflare-deployment.md): Hostname separation, custom domains, SSL/TLS, Vite plugin environments
-- [Error Handling](.claude/rules/error-handling.md): Drizzle error unwrapping, Result pattern, AppError flow
-- [Atomic Imports](.claude/rules/atomic-imports.md): Combine import + usage in one Edit (PostToolUse cleanup)
-- [Deep Modules](.claude/rules/deep-modules.md): Narrow interface, hidden implementation; module boundaries
+- [Atomic Import Edits](.claude/rules/atomic-imports.md): PostToolUse hooks (biome, eslint, etc.) may auto-delete "unused" imports between sequential edits.
+- [Cloudflare Deployment Rules](.claude/rules/cloudflare-deployment.md): Custom Domains vs Routes, HTTP→HTTPS Enforcement, SSL/TLS Mode, Vite Plugin Environments (`@cloudflare/vite-plugin`), Deploy Script Pattern, Debugging "Too Many Redirects"
+- [Deep Modules](.claude/rules/deep-modules.md): Principles, Application, Testing Corollary
+- [Error Handling](.claude/rules/error-handling.md): Layered Approach, Error Infrastructure, Drizzle Error Unwrapping, Result Pattern (API), Response Consistency
+- [Universal TypeScript Rules](.claude/rules/general.md): Type Safety, Error Handling, Naming, Array Access, Bug Fix Workflow
 
 ### api
-- [Hono](.claude/rules/api/hono.md): Handler/service/query pattern, middleware chain, Result type
-- [Cloudflare Workers](.claude/rules/api/cloudflare-workers.md): Worker patterns, bindings, WorkerEntrypoint
-
-### db
-- [Drizzle ORM](.claude/rules/db/drizzle.md): Schema definitions, migrations, query patterns
-- [Zod Validation](.claude/rules/db/zod.md): Schema naming conventions, request/response patterns
-- [Neon Postgres](.claude/rules/db/neon.md): Serverless DB connection patterns
+- [Astro API Endpoints](.claude/rules/api/astro-endpoints.md): File layout, Handler shape, Conventions, When to add Hono, Don't
+- [Cloudflare Workers Rules](.claude/rules/api/cloudflare-workers.md): Worker Entry, Env Bindings, Secrets Management, Request Handling, Deployment
 
 ### frontend
-- [TanStack](.claude/rules/frontend/tanstack.md): Router, Query, server functions, SSR patterns
-- [React](.claude/rules/frontend/react.md): Component patterns, hooks
-- [UI](.claude/rules/frontend/ui.md): Component library patterns
-- [shadcn/tweakcn](.claude/rules/frontend/shadcn-tweakcn.md): UI primitives
-- [Forms](.claude/rules/frontend/form-patterns.md): Form validation and submission
+- [Astro](.claude/rules/frontend/astro.md): Pages, layouts, components, Server vs client, API endpoints, Cloudflare runtime access (Astro v6 + `@astrojs/cloudflare` v13), Data fetching, Content collections (when adding markdown), Generated files — never edit
+- [Tailwind CSS v4](.claude/rules/frontend/tailwind-v4.md): Setup in this template, Customizing the theme, Custom utilities, Variants & states, Don't
 
 ## Agents
 
-- [Design Doc Writer](.claude/agents/dd-w.md): Create design documents and technical specifications
-- [Design Doc Implementer](.claude/agents/dd-i.md): Implement features from existing design documents
-- [MVP Advisor](.claude/agents/mvp-e.md): Ensure speed-over-perfection principles
+- [dd-i](.claude/agents/dd-i.md): Use this agent when the user wants to implement a feature or system based on an existing design document, implementation plan, or specification file.
+- [dd-w](.claude/agents/dd-w.md): Use this agent when the user requests design documentation, architecture documents, technical specifications, system design writeups, or implementation guides.
+- [mvp-e](.claude/agents/mvp-e.md): MVP development advisor.
 
 ## Commands
 
-- [Implement](.claude/commands/implement.md): Implement a design doc
-- [Verify Design Docs](.claude/commands/verify-dd.md): Review design docs for implementation readiness
+- [implement](.claude/commands/implement.md): Use dd-i agent and implement design doc: $ARGUMENTS
+- [verify-dd](.claude/commands/verify-dd.md): Review all design docs in /docs for implementation readiness.

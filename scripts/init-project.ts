@@ -14,22 +14,19 @@ import fs from "node:fs";
 import path from "node:path";
 import readline from "node:readline";
 import { fileURLToPath } from "node:url";
-import { isValidProjectName, missingWranglerEnvs, stripJsonc, symbolFor } from "./init-project-lib";
-import type { FanoutResult, RenameResult } from "./init-project-types";
+import {
+	isValidProjectName,
+	missingWranglerEnvs,
+	RENAME_TARGETS,
+	stripJsonc,
+	symbolFor,
+} from "./init-project-lib";
+import type { FanoutResult, RenameResult, RenameTarget } from "./init-project-types";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const ORIGINAL_WORKER_NAME = "astro-on-cf";
 const WITH_DB_FLAG = "--with-db";
 
-type RenameTarget =
-	| { file: string; mode: "package-name" }
-	| { file: string; mode: "all-occurrences"; needle: string };
 type EnvTemplate = { template: string; target: string };
-
-const RENAME_TARGETS: RenameTarget[] = [
-	{ file: "package.json", mode: "package-name" },
-	{ file: "wrangler.jsonc", mode: "all-occurrences", needle: ORIGINAL_WORKER_NAME },
-];
 
 const ENV_TEMPLATES: EnvTemplate[] = [
 	{ template: ".env.example", target: ".env" },
