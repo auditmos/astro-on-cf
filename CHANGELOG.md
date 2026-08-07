@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/auditmos/astro-on-cf/compare/v1.1.2...v1.2.0) (2026-08-07)
+
+
+### Features
+
+* **agents:** generate the agent index from the rules tree ([b39b3df](https://github.com/auditmos/astro-on-cf/commit/b39b3dfcd6c30b854c3afbc0b9314729ebf6b502)), closes [#20](https://github.com/auditmos/astro-on-cf/issues/20)
+
 ## [1.1.2](https://github.com/auditmos/astro-on-cf/compare/v1.1.1...v1.1.2) (2026-08-07)
 
 
