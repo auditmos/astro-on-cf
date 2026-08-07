@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/auditmos/astro-on-cf/compare/v1.3.1...v1.3.2) (2026-08-07)
+
+
+### Bug Fixes
+
+* **repo:** untrack generated types, converge Node, unpin the linter ([e1cad6a](https://github.com/auditmos/astro-on-cf/commit/e1cad6a64d26e68204386f5c1d96759830e159cb)), closes [#23](https://github.com/auditmos/astro-on-cf/issues/23)
+
 ## [1.3.1](https://github.com/auditmos/astro-on-cf/compare/v1.3.0...v1.3.1) (2026-08-07)
 
 
