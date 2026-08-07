@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/auditmos/astro-on-cf/compare/v1.1.1...v1.1.2) (2026-08-07)
+
+
+### Bug Fixes
+
+* **deploy:** name the environment on every deploy path ([726ab8e](https://github.com/auditmos/astro-on-cf/commit/726ab8e15aae534b92baac2b2a23f7b55c6d03de)), closes [#19](https://github.com/auditmos/astro-on-cf/issues/19)
+
 ## [1.1.1](https://github.com/auditmos/astro-on-cf/compare/v1.1.0...v1.1.1) (2026-05-31)
 
 # [1.1.0](https://github.com/auditmos/astro-on-cf/compare/v1.0.0...v1.1.0) (2026-05-25)
