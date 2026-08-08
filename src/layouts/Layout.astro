@@ -1,4 +1,5 @@
 ---
+import { buildPageMeta } from "@/seo";
 import "@/styles/globals.css";
 
 interface Props {
@@ -7,6 +8,16 @@ interface Props {
 }
 
 const { title = "astro-on-cf", description = "Astro on Cloudflare Workers" } = Astro.props;
+
+// Every link-preview tag comes from here. Adding one — a preview image, a locale —
+// is an edit in src/seo/, and src/seo/index.test.ts fails if a tag name is written
+// into this file instead.
+const { canonical, tags } = buildPageMeta({
+	title,
+	description,
+	site: Astro.site,
+	url: Astro.url,
+});
 ---
 
 <!doctype html>
@@ -15,6 +26,8 @@ const { title = "astro-on-cf", description = "Astro on Cloudflare Workers" } = A
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical.href} />
+		{tags.map((tag) => <meta {...tag} />)}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />

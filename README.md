@@ -63,9 +63,12 @@ If you opted into the data layer with `--with-db`, you also get `db:generate:{de
 src/
 ├── pages/                       # File-based routes
 │   ├── index.astro              # Landing page
+│   ├── sitemap.xml.ts           # Sitemap route (SSR — nothing here is prerendered)
+│   ├── robots.txt.ts            # Robots route, pointing at the sitemap
 │   └── api/                     # API endpoints (./api/<name>.ts)
 │       └── health.ts            # Exemplar: parse, delegate, respond
 ├── health/                      # The pure module it delegates to, plus its tests
+├── seo/                         # Sitemap, robots and link-preview tags
 ├── middleware.ts                # Renders, then applies the security-header baseline
 ├── security-headers/            # That baseline — the only place a header is named
 ├── layouts/
@@ -123,6 +126,26 @@ In Astro v6 + `@astrojs/cloudflare` v13 the `Astro.locals.runtime` proxy is gone
 ### Secrets & environments
 
 Per-environment vars live in `.dev.vars` / `.dev.vars.staging` / `.dev.vars.production`, never committed. This matches the wrangler convention — `.dev.vars.<env>` is loaded ahead of `.dev.vars` when `CLOUDFLARE_ENV=<env>` is set ([docs](https://developers.cloudflare.com/workers/configuration/secrets/#local-development-with-secrets)). For staging/production, mirror the same keys as Cloudflare secrets via `wrangler secret put --env <name>`.
+
+### Site URL, sitemap and robots
+
+`astro.config.mjs` reads the site origin from `SITE_URL`, falling back to a
+placeholder. It is a **build-time** value — not a Worker binding — so it is set on
+the build, and every deploy script builds first:
+
+```bash
+SITE_URL=https://staging.example.com pnpm deploy:staging
+```
+
+That origin is what canonical URLs, `/sitemap.xml` and `/robots.txt` resolve
+against. Left unset, all three fall back to the origin the request arrived on,
+which is right often enough to be safe and never as good as configuring it.
+
+Both files are routes rather than static assets ([`src/pages/sitemap.xml.ts`](./src/pages/sitemap.xml.ts),
+[`src/pages/robots.txt.ts`](./src/pages/robots.txt.ts)) — this template renders on
+demand and prerenders nothing, so a build-time sitemap integration would have no
+routes to enumerate. Link-preview tags come from the same module,
+[`src/seo/`](./src/seo/), driven by the layout's `title` and `description` props.
 
 ### Deploying
 
