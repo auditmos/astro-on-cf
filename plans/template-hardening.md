@@ -3,6 +3,23 @@
 > Source PRD: [#17 — Make astro-on-cf deployable, honest, and current](https://github.com/auditmos/astro-on-cf/issues/17)
 > Audit with exact file/line locations for every finding: [#16](https://github.com/auditmos/astro-on-cf/issues/16) (closed, superseded)
 
+## Status
+
+**Delivered — 2026-08-08.** All ten phase issues (#18–#27) are closed and the PRD (#17) is closed.
+63 of the 66 acceptance criteria below are ticked against verification, not against
+recollection: the check suite (`pnpm test`, `pnpm types`, `pnpm lint`, `pnpm knip`,
+`pnpm build`, all exit 0), plus a `pnpm preview` run of the built Worker for every
+criterion phrased as runtime behaviour — the five security headers present and the
+content-security-policy absent, `/llms.txt`, `/robots.txt` and `/sitemap.xml` all 200,
+the link-preview tags emitted, and `/api/health` answering 200 and 400. The two
+criteria phrased as *removals* were verified by performing the removal: deleting a
+rule file turns the drift test red, and restoring it turns it green.
+
+Three criteria are left unticked with the reason recorded inline — two in Phase 2,
+one in Phase 4. None blocks the PRD, and the Phase 4 one is a genuine cross-phase
+regression rather than work that was skipped. They are listed together in
+[Known gaps](#known-gaps) below.
+
 ## Issue map
 
 Each phase is tracked by one issue, labelled `template-hardening`. All are AFK — the PRD resolved every decision, so none needs input before it can be picked up.
@@ -55,12 +72,12 @@ Mind the existing environment guard around git hooks in CI — the release workf
 
 ### Acceptance criteria
 
-- [ ] A workflow runs on `pull_request` and on pushes to main
-- [ ] It runs lint, type check, test, dead-code check, and the production build
-- [ ] A pull request containing a deliberate build-breaking change fails CI, where lint, types and test alone would have passed
-- [ ] The release pipeline also runs the build before releasing
-- [ ] A weekly dependency pull request shows the same checks as a human-authored one
-- [ ] Git hooks are not installed into the CI runner (matching the existing guard and its documented rationale)
+- [x] A workflow runs on `pull_request` and on pushes to main
+- [x] It runs lint, type check, test, dead-code check, and the production build
+- [x] A pull request containing a deliberate build-breaking change fails CI, where lint, types and test alone would have passed
+- [x] The release pipeline also runs the build before releasing
+- [x] A weekly dependency pull request shows the same checks as a human-authored one
+- [x] Git hooks are not installed into the CI runner (matching the existing guard and its documented rationale)
 
 ---
 
@@ -82,14 +99,14 @@ Update both the README and the agent-facing project doc to print commands that r
 
 ### Acceptance criteria
 
-- [ ] Separate staging and production deploy commands exist, each naming its environment explicitly
-- [ ] The previously colliding script name no longer resolves to the package manager's built-in command
-- [ ] A deploy invoked without an environment fails rather than targeting the top-level Worker
-- [ ] A contract test asserts every deploy-invoking script carries an explicit environment flag, and fails if a bare deploy script is added
-- [ ] Source map upload is enabled in the Worker configuration, asserted by the contract test
-- [ ] Every deploy command printed in the README and the agent-facing project doc runs as written
-- [ ] The manual-deploy decision is documented as deliberate, with a pointer for consumers who want to automate it per-project
-- [ ] Every Worker in the account corresponds to a declared environment block
+- [x] Separate staging and production deploy commands exist, each naming its environment explicitly
+- [x] The previously colliding script name no longer resolves to the package manager's built-in command
+- [ ] A deploy invoked without an environment fails rather than targeting the top-level Worker — **partially met.** No script or documented command reaches the bare path, and `scripts/deploy-scripts.test.ts` fails if one is added back. But `wrangler.jsonc` still carries a top-level `name`, so a hand-typed `wrangler deploy` succeeds and creates the fourth Worker. Made unreachable, not made to fail.
+- [x] A contract test asserts every deploy-invoking script carries an explicit environment flag, and fails if a bare deploy script is added
+- [x] Source map upload is enabled in the Worker configuration, asserted by the contract test
+- [x] Every deploy command printed in the README and the agent-facing project doc runs as written
+- [x] The manual-deploy decision is documented as deliberate, with a pointer for consumers who want to automate it per-project
+- [ ] Every Worker in the account corresponds to a declared environment block — **not verifiable from the repository.** Needs an inventory of the Cloudflare account, and wrangler exposes no list-all-scripts command. Left open deliberately: the repository can assert what it deploys, not what already exists in an account.
 
 ---
 
@@ -111,15 +128,15 @@ The index carries the template's name, so the project-initialization script must
 
 ### Acceptance criteria
 
-- [ ] A pure builder module emits the index from the rules tree, unit-tested at its exported boundary over a fixture tree
-- [ ] The generated index states this project's name and an accurate one-line summary
-- [ ] Every rule file present in the tree appears in the index
-- [ ] Every link in the index resolves to a path that exists
-- [ ] A drift test regenerates from the real tree and fails when the committed copy is stale
-- [ ] Deleting a rule file, adding one, or renaming the project each turn the drift test red
-- [ ] The index is present in build output and served at the conventional path by a deployed clone
-- [ ] Exactly one source of truth for the file — no hand-maintained second copy
-- [ ] Scaffolding a new project rewrites the project name in the index
+- [x] A pure builder module emits the index from the rules tree, unit-tested at its exported boundary over a fixture tree
+- [x] The generated index states this project's name and an accurate one-line summary
+- [x] Every rule file present in the tree appears in the index
+- [x] Every link in the index resolves to a path that exists
+- [x] A drift test regenerates from the real tree and fails when the committed copy is stale
+- [x] Deleting a rule file, adding one, or renaming the project each turn the drift test red
+- [x] The index is present in build output and served at the conventional path by a deployed clone
+- [x] Exactly one source of truth for the file — no hand-maintained second copy
+- [x] Scaffolding a new project rewrites the project name in the index
 
 ---
 
@@ -139,13 +156,13 @@ Keep it genuinely minimal so that a consumer who does not want it can delete it 
 
 ### Acceptance criteria
 
-- [ ] A health endpoint exists, validating its input at the boundary
-- [ ] The endpoint's logic lives in a pure module with a narrow exported interface
-- [ ] The module has a boundary test covering the success shape and the validation-failure shape
-- [ ] The endpoint file contains only parsing, delegation and response construction — no logic needing its own test
-- [ ] The response sets an explicit status in every path
-- [ ] The validation library is a declared dependency and the dead-code check passes
-- [ ] Removing the exemplar is a single deletion that leaves the template green
+- [x] A health endpoint exists, validating its input at the boundary
+- [x] The endpoint's logic lives in a pure module with a narrow exported interface
+- [x] The module has a boundary test covering the success shape and the validation-failure shape
+- [x] The endpoint file contains only parsing, delegation and response construction — no logic needing its own test
+- [x] The response sets an explicit status in every path
+- [x] The validation library is a declared dependency and the dead-code check passes
+- [ ] Removing the exemplar is a single deletion that leaves the template green — **regressed by Phase 5.** It held when this phase landed: `knip.jsonc` still documents the `zod` ignore added so deleting the exemplar would not turn the dead-code check red. Phase 5 then pointed the docs at `src/health/` and `src/pages/api/health.ts` (four pointers in `AGENTS.md`, one in the README), and `scripts/docs-truth.test.ts` fails when a documented path stops existing. Deleting the exemplar is now a deletion plus a five-line docs edit.
 
 ---
 
@@ -167,11 +184,11 @@ Reconcile the remaining structural claims in the README and the project doc with
 
 ### Acceptance criteria
 
-- [ ] The requirements directory named in the project doc exists, with a stub describing its purpose
-- [ ] No pointer in the project doc resolves to a path that does not exist
-- [ ] The README's configuration snippet contains no literal value that the automated bots can make stale
-- [ ] The snippet points at the real configuration file as its source of truth
-- [ ] Structural claims in the README and project doc match the directories actually present after Phase 4
+- [x] The requirements directory named in the project doc exists, with a stub describing its purpose
+- [x] No pointer in the project doc resolves to a path that does not exist
+- [x] The README's configuration snippet contains no literal value that the automated bots can make stale
+- [x] The snippet points at the real configuration file as its source of truth
+- [x] Structural claims in the README and project doc match the directories actually present after Phase 4
 
 ---
 
@@ -193,13 +210,13 @@ The dead-code configuration ignores a dependency copied from a sibling template 
 
 ### Acceptance criteria
 
-- [ ] The generated type file is untracked, and its ignore entry is now effective rather than decorative
-- [ ] Regenerating types leaves the working tree clean
-- [ ] A fresh clone produces working types after install, with no manual step
-- [ ] The declared runtime floor, the type packages, and the version CI resolves are the same major
-- [ ] The linter is no longer pinned to an exact version, or its pin is documented with a reason
-- [ ] The dead-code configuration contains no ignore for a dependency absent from the manifest
-- [ ] The full check suite passes after all four changes
+- [x] The generated type file is untracked, and its ignore entry is now effective rather than decorative
+- [x] Regenerating types leaves the working tree clean
+- [x] A fresh clone produces working types after install, with no manual step
+- [x] The declared runtime floor, the type packages, and the version CI resolves are the same major
+- [x] The linter is no longer pinned to an exact version, or its pin is documented with a reason
+- [x] The dead-code configuration contains no ignore for a dependency absent from the manifest
+- [x] The full check suite passes after all four changes
 
 ---
 
@@ -221,12 +238,12 @@ Extend the configuration contract test to cover these decisions, so removing any
 
 ### Acceptance criteria
 
-- [ ] The image service is pinned explicitly, with the rationale and the alternative recorded in a comment
-- [ ] The build emits no image-service chunks or implicit image binding that was not deliberately chosen
-- [ ] The session binding is resolved deliberately — pre-wired as a commented block, or explicitly disabled
-- [ ] First use of sessions in a clone does not fail at deploy time for want of a namespace identifier
-- [ ] Assets-routing options are present and commented with a one-line rationale
-- [ ] The configuration contract test asserts each of these decisions and fails if any is removed
+- [x] The image service is pinned explicitly, with the rationale and the alternative recorded in a comment
+- [x] The build emits no image-service chunks or implicit image binding that was not deliberately chosen
+- [x] The session binding is resolved deliberately — pre-wired as a commented block, or explicitly disabled
+- [x] First use of sessions in a clone does not fail at deploy time for want of a namespace identifier
+- [x] Assets-routing options are present and commented with a one-line rationale
+- [x] The configuration contract test asserts each of these decisions and fails if any is removed
 
 ---
 
@@ -244,12 +261,12 @@ Ship the transport, content-type, referrer, framing and permissions headers enab
 
 ### Acceptance criteria
 
-- [ ] A pure policy module exports the header set, unit-tested at its boundary
-- [ ] Middleware applies the policy to SSR responses and contains no policy logic itself
-- [ ] Transport, content-type, referrer, framing and permissions headers are present on a deployed response
-- [ ] The content-security-policy ships commented, with a note explaining why it is opt-in
-- [ ] The commented policy does not appear in emitted headers
-- [ ] Adding or changing a header requires editing only the module
+- [x] A pure policy module exports the header set, unit-tested at its boundary
+- [x] Middleware applies the policy to SSR responses and contains no policy logic itself
+- [x] Transport, content-type, referrer, framing and permissions headers are present on a deployed response
+- [x] The content-security-policy ships commented, with a note explaining why it is opt-in
+- [x] The commented policy does not appear in emitted headers
+- [x] Adding or changing a header requires editing only the module
 
 ---
 
@@ -267,12 +284,12 @@ Keep the layout's existing prop interface as the input for these tags rather tha
 
 ### Acceptance criteria
 
-- [ ] The site URL is configured and environment-driven
-- [ ] A deployed clone serves a sitemap
-- [ ] A robots file is served and points at the sitemap
-- [ ] The shared layout emits Open Graph, Twitter and canonical tags
-- [ ] Those tags are driven by the layout's existing props, with sensible defaults
-- [ ] A link to a deployed clone renders a title, description and canonical URL when shared
+- [x] The site URL is configured and environment-driven
+- [x] A deployed clone serves a sitemap
+- [x] A robots file is served and points at the sitemap
+- [x] The shared layout emits Open Graph, Twitter and canonical tags
+- [x] Those tags are driven by the layout's existing props, with sensible defaults
+- [x] A link to a deployed clone renders a title, description and canonical URL when shared
 
 ---
 
@@ -292,12 +309,12 @@ This phase makes the Astro 7 decision *visible*. It does not make it — that mi
 
 ### Acceptance criteria
 
-- [ ] A scheduled job checks for pending major upgrades
-- [ ] A pure formatter turns the tool's output into a report body, unit-tested for both the has-majors and no-majors cases
-- [ ] A run with pending majors opens an issue the first time and updates the same issue thereafter
-- [ ] A run with no pending majors opens no issue and leaves any existing one untouched
-- [ ] A format change in the upstream tool fails the formatter test rather than producing an empty issue
-- [ ] No major upgrade is performed by this phase
+- [x] A scheduled job checks for pending major upgrades
+- [x] A pure formatter turns the tool's output into a report body, unit-tested for both the has-majors and no-majors cases
+- [x] A run with pending majors opens an issue the first time and updates the same issue thereafter
+- [x] A run with no pending majors opens no issue and leaves any existing one untouched
+- [x] A format change in the upstream tool fails the formatter test rather than producing an empty issue
+- [x] No major upgrade is performed by this phase
 
 ---
 
@@ -308,3 +325,33 @@ This phase makes the Astro 7 decision *visible*. It does not make it — that mi
 **Story 41** — project initialization accounting for name-carrying files — lands in Phase 3, the only phase adding such a file. Any later phase that adds one inherits the same obligation.
 
 **Out of scope for the whole plan**: the Astro 7 / adapter 14 migration; automated deploys; application features or UI framework integrations beyond the single exemplar; changes to the optional data layer or the release process; a tuned content-security-policy; cross-tool agent configuration beyond the generated index.
+
+---
+
+## Known gaps
+
+The three unticked criteria, kept here so they are findable without reading every phase.
+
+**The bare deploy path is unreachable, not fatal** (Phase 2). Every route the repository
+offers names an environment, and a contract test keeps it that way — but `wrangler.jsonc`
+still carries a top-level `name`, so an operator typing `wrangler deploy` by hand creates
+the unmanaged fourth Worker the phase set out to eliminate. Closing this means removing
+the top-level `name` and confirming the three environment blocks still resolve without it.
+
+**Account inventory is outside the repository's reach** (Phase 2). Whether every Worker in
+the Cloudflare account maps to a declared environment cannot be asserted from here, and
+wrangler offers no list-all-scripts command. This is a one-off manual reconciliation, not
+a test.
+
+**Phase 5 regressed a Phase 4 guarantee.** The exemplar was built to be deletable in one
+step, and `knip.jsonc` still carries the `zod` ignore that was added to protect exactly
+that. Phase 5 then made the docs point at `src/health/` and `src/pages/api/health.ts`, so
+`scripts/docs-truth.test.ts` — correctly — fails when those paths stop existing. The two
+phases are each right on their own terms and jointly turn a one-step deletion into a
+six-file edit. Worth resolving deliberately: either describe the exemplar without pointing
+at its paths, or accept the docs edit and say so where deletion is documented.
+
+This is the shape the PRD predicted. Its closing note observed that this template family
+carries files across without re-grounding them; the same reasoning applies within a plan,
+where a later phase can invalidate an earlier phase's acceptance without either phase
+being wrong.
