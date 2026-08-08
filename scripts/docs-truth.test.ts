@@ -1,7 +1,8 @@
 /**
- * Contract test for the claims the repository makes about itself (issue #22).
+ * Contract test for the claims the repository makes about itself (issue #22),
+ * extended to the command surface for the PRD's whole-document acceptance (#17).
  *
- * Two failure modes are covered, both of which had already happened:
+ * Three failure modes are covered, all of which had already happened:
  *
  * 1. **Dead pointers.** The project doc named `/docs` as the single source of
  *    truth for business requirements while no such directory existed, and
@@ -12,11 +13,19 @@
  *    made the README staler. The fix is to delete the copy rather than to sync it:
  *    teaching the bot to rewrite prose automates a problem better removed, and a
  *    drift test would turn every legitimate config edit into a two-file edit.
+ * 3. **Commands that do not run.** Both docs told the reader to run `pnpm deploy`,
+ *    which pnpm resolves to its own workspace-deploy built-in and never to the
+ *    script of that name. The PRD's acceptance is that *every* command printed in
+ *    the docs runs as written, so the whole `pnpm` surface is checked here rather
+ *    than only the deploy commands — those carry extra, deploy-specific
+ *    obligations asserted in `scripts/deploy-scripts.test.ts`.
  *
  * **Scope.** A "pointer" here is a backticked token rooted in one of the tracked
- * directories, or a relative markdown link target. Package names, shell commands
- * and gitignored env files are deliberately out of scope — they are not claims
- * about the tree. The `--with-db` section is excluded because it describes what
+ * directories, or a relative markdown link target. Package names and gitignored
+ * env files are deliberately out of scope as pointers — they are not claims about
+ * the tree. Shell commands are not tree claims either, but a printed `pnpm <name>`
+ * *is* a claim about the script surface, so it is checked separately below. The
+ * `--with-db` section is excluded throughout because it describes what
  * `init-project --with-db` scaffolds, not what is present.
  */
 
@@ -26,6 +35,12 @@ import { resolve } from "node:path";
 const ROOT = resolve(import.meta.dirname, "..");
 const README = readFileSync(resolve(ROOT, "README.md"), "utf8");
 const PROJECT_DOC = readFileSync(resolve(ROOT, "AGENTS.md"), "utf8");
+const SCRIPTS =
+	(
+		JSON.parse(readFileSync(resolve(ROOT, "package.json"), "utf8")) as {
+			scripts?: Record<string, string>;
+		}
+	).scripts ?? {};
 
 /** Directories whose contents are tracked, so a pointer into them is a checkable claim. */
 const TRACKED_ROOTS = ["src", "scripts", "public", ".claude", "docs"];
@@ -146,5 +161,53 @@ describe("README Worker configuration", () => {
 
 	it("links wrangler.jsonc as the source of truth instead", () => {
 		expect(README).toMatch(/\]\(\.\/wrangler\.jsonc\)/);
+	});
+});
+
+/**
+ * pnpm's own commands that the docs invoke for their built-in meaning rather
+ * than expecting a script of that name. Kept deliberately short: a built-in that
+ * shadows an intended script is the defect this check exists to catch — adding
+ * `deploy` here would re-admit the original bug — so every entry must be a
+ * command whose built-in behaviour is exactly what the doc means.
+ */
+const DOCUMENTED_BUILT_INS = ["install"];
+
+/**
+ * A command is only a claim where it is presented as one: a fenced block or
+ * inline code. Prose mentioning "pnpm 10" or "pnpm built-in" is not an
+ * instruction to run anything.
+ */
+function commandsIn(doc: string): string[] {
+	const text = withoutConditionalSections(doc);
+
+	const fenced = [...text.matchAll(/```[a-z]*\n([\s\S]*?)```/g)].map((match) => match[1] as string);
+	const inline = [...text.matchAll(/`([^`\n]+)`/g)].map((match) => match[1] as string);
+
+	return [
+		...new Set(
+			[...fenced, ...inline].flatMap((span) =>
+				[...span.matchAll(/\bpnpm (?:run )?([\w:.-]+)/g)].map((match) => match[1] as string),
+			),
+		),
+	];
+}
+
+// `CLAUDE.md` is a symlink to `AGENTS.md`, so the project doc covers both names.
+describe.each([
+	["AGENTS.md", PROJECT_DOC],
+	["README.md", README],
+])("%s commands", (_name, doc) => {
+	const commands = commandsIn(doc);
+
+	it("prints some, so the checks below are not vacuous", () => {
+		expect(commands.length).toBeGreaterThan(0);
+	});
+
+	it("runs as written — every one names a declared script", () => {
+		const broken = commands.filter(
+			(name) => !SCRIPTS[name] && !DOCUMENTED_BUILT_INS.includes(name),
+		);
+		expect(broken).toEqual([]);
 	});
 });
