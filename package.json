@@ -32,7 +32,8 @@
 		"deps": "taze -r",
 		"deps:update": "taze -r -w",
 		"deps:major": "taze -r major",
-		"deps:major:update": "taze -r major -w"
+		"deps:major:update": "taze -r major -w",
+		"deps:major:report": "tsx scripts/report-majors.ts"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^13.7.0",

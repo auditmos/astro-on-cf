@@ -114,3 +114,51 @@ describe("deps-update workflow", () => {
 		expect(deps.env?.SKIP_SIMPLE_GIT_HOOKS).toBe("1");
 	});
 });
+
+/**
+ * The majors-report workflow (issue #27).
+ *
+ * It exists because the weekly bot runs in minor mode, so majors accumulate where
+ * nobody looks. Two properties are asserted rather than reviewed: it runs on a
+ * schedule, and it *reports* — a step that wrote package.json would turn a
+ * surfacing job into an unreviewed upgrade, which is the one thing the phase
+ * promised not to do.
+ */
+describe("majors-report workflow", () => {
+	const majors = readWorkflow("majors-report.yml");
+	const commands = runCommands(majors);
+
+	it("runs on a schedule, so majors surface without anyone remembering to look", () => {
+		const schedule = majors.on?.schedule as { cron?: string }[] | undefined;
+		expect(schedule?.[0]?.cron).toBeTruthy();
+	});
+
+	it("can also be run by hand, so the report is reproducible on demand", () => {
+		expect(majors.on).toHaveProperty("workflow_dispatch");
+	});
+
+	it("may write issues, and only issues", () => {
+		const permissions = (majors as { permissions?: Record<string, string> }).permissions;
+		expect(permissions?.issues).toBe("write");
+		expect(permissions?.contents).toBe("read");
+	});
+
+	it("runs the reporter", () => {
+		expect(runsCommand(majors, "deps:major:report")).toBe(true);
+	});
+
+	it("performs no upgrade — this job makes majors visible, it does not take them", () => {
+		const writes = commands.filter((run) =>
+			/deps:major:update|deps:update|taze[^\n]*(-w\b|--write)/.test(run),
+		);
+		expect(writes).toEqual([]);
+	});
+
+	it("opens no pull request, since there is no change to propose", () => {
+		expect(steps(majors).filter((step) => step.uses?.includes("create-pull-request"))).toEqual([]);
+	});
+
+	it("does not install git hooks into the runner", () => {
+		expect(majors.env?.SKIP_SIMPLE_GIT_HOOKS).toBe("1");
+	});
+});

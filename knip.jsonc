@@ -15,9 +15,11 @@
 		// Consumed through CSS (`@import "tailwindcss"`), a channel knip does not follow.
 		"tailwindcss",
 		// Stack dependency, not an exemplar dependency: the endpoint rules and the
-		// README both prescribe Zod at every boundary, so it must outlive the one
-		// endpoint that currently imports it. Without this, deleting the exemplar
-		// (src/health/ + src/pages/api/health.ts) turns knip red on an unused dep.
+		// README both prescribe Zod at every boundary, so it must outlive any single
+		// importer. Without this, deleting the exemplar (src/health/ +
+		// src/pages/api/health.ts) turned knip red on an unused dep. Two importers
+		// remain — the exemplar and scripts/majors-report-lib.ts, which validates
+		// taze's output shape — so the entry is currently belt and braces.
 		"zod"
 	]
 }

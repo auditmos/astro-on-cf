@@ -64,6 +64,7 @@ pnpm knip                 # unused files / deps / exports
 pnpm deps                 # check minor + patch updates
 pnpm deps:update          # apply them
 pnpm deps:major           # show major updates
+pnpm deps:major:report    # report pending majors into one tracked issue (--dry-run to print)
 pnpm release              # semantic-release (CI only)
 ```
 

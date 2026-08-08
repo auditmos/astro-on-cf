@@ -53,6 +53,8 @@ The app runs on http://localhost:3000.
 | `pnpm lint` / `pnpm lint:fix` | Biome check / auto-fix |
 | `pnpm knip` | Detect unused files, deps, and exports |
 | `pnpm deps` / `pnpm deps:update` | Check / apply dependency updates via taze |
+| `pnpm deps:major` / `pnpm deps:major:update` | Show / apply major updates — a decision, never automated |
+| `pnpm deps:major:report` | Report pending majors into the tracking issue (`--dry-run` prints it instead) |
 | `pnpm release` | semantic-release (CI only) |
 
 If you opted into the data layer with `--with-db`, you also get `db:generate:{dev,staging,production}`, `db:migrate:*`, `db:pull:*`, `db:studio`, and `db:seed:*` — all wired through `@dotenvx/dotenvx`.
