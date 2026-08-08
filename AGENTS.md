@@ -25,6 +25,8 @@ Astro (SSR) on Cloudflare Workers, with Tailwind v4 and an optional Drizzle + Ne
 - `src/pages/api/` — Astro API endpoints, one file per route or `[...slug].ts` for catch-all
 - `src/pages/api/health.ts` — the exemplar endpoint: parses, delegates, responds, nothing else
 - `src/health/` — the pure module beneath it, and the thing that carries the tests
+- `src/middleware.ts` — the one middleware: renders, then applies the header baseline. No policy of its own
+- `src/security-headers/` — that baseline. Changing a header is an edit here and nowhere else
 - `src/layouts/` — shared layouts wrapping page slots
 - `src/styles/globals.css` — Tailwind v4 entry (`@import "tailwindcss";`)
 - `src/env.d.ts` — declares `App.Locals` typed against Cloudflare `Env`

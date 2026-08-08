@@ -66,6 +66,8 @@ src/
 │   └── api/                     # API endpoints (./api/<name>.ts)
 │       └── health.ts            # Exemplar: parse, delegate, respond
 ├── health/                      # The pure module it delegates to, plus its tests
+├── middleware.ts                # Renders, then applies the security-header baseline
+├── security-headers/            # That baseline — the only place a header is named
 ├── layouts/
 │   └── Layout.astro             # Shared HTML shell
 ├── styles/
