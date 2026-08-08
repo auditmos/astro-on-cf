@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/auditmos/astro-on-cf/compare/v1.6.0...v1.7.0) (2026-08-08)
+
+
+### Features
+
+* **deps:** surface pending major upgrades into one tracked issue ([7d77a18](https://github.com/auditmos/astro-on-cf/commit/7d77a18df5eafa0fb0494e1867bcbb00dd60704c)), closes [#27](https://github.com/auditmos/astro-on-cf/issues/27)
+
 # [1.6.0](https://github.com/auditmos/astro-on-cf/compare/v1.5.0...v1.6.0) (2026-08-08)
 
 
