@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/auditmos/astro-on-cf/compare/v1.4.0...v1.5.0) (2026-08-08)
+
+
+### Features
+
+* **security:** ship a header baseline as a policy module behind thin middleware ([aaf75a1](https://github.com/auditmos/astro-on-cf/commit/aaf75a1c88de5f152408271ee88161a860bdf4c2)), closes [#25](https://github.com/auditmos/astro-on-cf/issues/25)
+
 # [1.4.0](https://github.com/auditmos/astro-on-cf/compare/v1.3.2...v1.4.0) (2026-08-07)
 
 
