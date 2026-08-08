@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/auditmos/astro-on-cf/compare/v1.5.0...v1.6.0) (2026-08-08)
+
+
+### Features
+
+* **seo:** scaffold the site URL, sitemap, robots and link-preview tags ([651062b](https://github.com/auditmos/astro-on-cf/commit/651062be6da02cca031cbd70f122cd5b00f11f00)), closes [#26](https://github.com/auditmos/astro-on-cf/issues/26)
+
 # [1.5.0](https://github.com/auditmos/astro-on-cf/compare/v1.4.0...v1.5.0) (2026-08-08)
 
 
