@@ -17,7 +17,7 @@ Astro (SSR) on Cloudflare Workers, with Tailwind v4 and an optional Drizzle + Ne
 | Testing | Vitest |
 | Dead-code | knip |
 | Release | semantic-release |
-| Package manager | pnpm 10 |
+| Package manager | pnpm 12 |
 
 ## Project Structure
 

@@ -175,7 +175,7 @@ const DOCUMENTED_BUILT_INS = ["install"];
 
 /**
  * A command is only a claim where it is presented as one: a fenced block or
- * inline code. Prose mentioning "pnpm 10" or "pnpm built-in" is not an
+ * inline code. Prose mentioning "pnpm 12" or "pnpm built-in" is not an
  * instruction to run anything.
  */
 function commandsIn(doc: string): string[] {
