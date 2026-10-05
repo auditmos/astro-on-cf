@@ -177,7 +177,7 @@ Same conventions as `tstack-on-cf` and `hono-on-cf`: domain-per-folder, narrow p
 This template is set up for agent-assisted development:
 
 - `CLAUDE.md` → symlink to `AGENTS.md` — project-wide agent guide.
-- `.claude/rules/` — topic rules (`general.md`, `deep-modules.md`, `error-handling.md`, `atomic-imports.md`, `cloudflare-deployment.md`, plus `frontend/{astro,tailwind-v4}.md` and `api/{cloudflare-workers,astro-endpoints}.md`) that activate automatically based on the files being edited.
+- `.claude/rules/` — topic rules (`general.md`, `deep-modules.md`, `error-handling.md`, `atomic-imports.md`, `cloudflare-deployment.md`, plus `frontend/{astro,tailwind-v4}.md` and `api/astro-endpoints.md`) that load in every session.
 - `.claude/agents/` — `dd-w` (design-doc writer), `dd-i` (design-doc implementer), `mvp-e` (MVP enforcer).
 - `/docs` — single source of truth for business requirements / design docs.
 - `llms.txt` — the agent index, **generated** from the two above by `pnpm gen:llms-txt`. `public/llms.txt` symlinks to it so a deployed clone serves it at `/llms.txt`; there is no second copy to keep in sync. A drift test fails if the committed file falls behind the tree.

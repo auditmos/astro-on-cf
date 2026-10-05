@@ -23,20 +23,6 @@
 - Zone SSL/TLS encryption mode MUST be **Full** or **Full (strict)**, never Flexible
 - Flexible + any HTTPS redirect = infinite redirect loop
 
-## Vite Plugin Environments (`@cloudflare/vite-plugin`)
-
-- The Vite plugin reads all env blocks from `wrangler.jsonc` and resolves bindings automatically
-- `vite build --mode staging` bakes environment config (routes, bindings, worker name) into the build output
-- `wrangler deploy --env=''` deploys the pre-configured build — the env is already embedded by the plugin
-
-## Deploy Script Pattern
-
-```jsonc
-// Vite plugin — env baked into build via --mode
-"build:staging": "vite build --mode staging",
-"deploy:staging": "pnpm run build:staging && wrangler deploy --env=''"
-```
-
 ## Debugging "Too Many Redirects"
 
 1. `curl -sI https://domain/path` — check if response is 301 to same URL

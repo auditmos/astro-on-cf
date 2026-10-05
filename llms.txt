@@ -10,14 +10,13 @@
 
 ### General
 - [Atomic Import Edits](.claude/rules/atomic-imports.md): PostToolUse hooks (biome, eslint, etc.) may auto-delete "unused" imports between sequential edits.
-- [Cloudflare Deployment Rules](.claude/rules/cloudflare-deployment.md): Custom Domains vs Routes, HTTP→HTTPS Enforcement, SSL/TLS Mode, Vite Plugin Environments (`@cloudflare/vite-plugin`), Deploy Script Pattern, Debugging "Too Many Redirects"
+- [Cloudflare Deployment Rules](.claude/rules/cloudflare-deployment.md): Custom Domains vs Routes, HTTP→HTTPS Enforcement, SSL/TLS Mode, Debugging "Too Many Redirects"
 - [Deep Modules](.claude/rules/deep-modules.md): Principles, Application, Testing Corollary
-- [Error Handling](.claude/rules/error-handling.md): Layered Approach, Error Infrastructure, Drizzle Error Unwrapping, Result Pattern (API), Response Consistency
+- [Error Handling](.claude/rules/error-handling.md): Layered Approach, Drizzle Error Unwrapping, Response Consistency
 - [Universal TypeScript Rules](.claude/rules/general.md): Type Safety, Error Handling, Naming, Array Access, Bug Fix Workflow
 
 ### api
 - [Astro API Endpoints](.claude/rules/api/astro-endpoints.md): File layout, Handler shape, Conventions, When to add Hono, Don't
-- [Cloudflare Workers Rules](.claude/rules/api/cloudflare-workers.md): Worker Entry, Env Bindings, Secrets Management, Request Handling, Deployment
 
 ### frontend
 - [Astro](.claude/rules/frontend/astro.md): Pages, layouts, components, Server vs client, API endpoints, Cloudflare runtime access (Astro v6 + `@astrojs/cloudflare` v13), Data fetching, Content collections (when adding markdown), Generated files — never edit

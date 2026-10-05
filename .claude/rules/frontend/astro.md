@@ -4,7 +4,7 @@
 
 - Pages live in `src/pages/`. File path → URL route. `.astro`, `.md`, `.mdx` and `.ts` (endpoints) are valid.
 - Layouts in `src/layouts/`. Wrap children with `<slot />`. Re-use across pages.
-- Components in `src/components/`. Co-locate per feature folder when a group emerges.
+- A reusable component gets its own folder under `src/` once a second page needs it; there is no `src/components/` waiting for them.
 - Path alias `@/*` resolves to `src/*`.
 
 ## Server vs client

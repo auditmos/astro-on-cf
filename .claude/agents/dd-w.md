@@ -7,13 +7,12 @@ color: cyan
 
 ## Project Context & Rules
 
-@.claude/CLAUDE.md
+@AGENTS.md
 @.claude/rules/general.md
 @.claude/rules/deep-modules.md
 @.claude/rules/error-handling.md
 @.claude/rules/atomic-imports.md
 @.claude/rules/cloudflare-deployment.md
-@.claude/rules/api/cloudflare-workers.md
 @.claude/rules/api/astro-endpoints.md
 @.claude/rules/frontend/astro.md
 @.claude/rules/frontend/tailwind-v4.md
@@ -74,9 +73,7 @@ Your documents follow a consistent structure adapted to the content:
 
 ### 3. File Naming Convention
 
-Documents are named with sequential numbering:
-- Format: `NNN-descriptive-name.md` (e.g., `001-system-design.md`, `002-authentication-flow.md`)
-- Check existing documents to determine the next number in sequence
+One topic per file, `kebab-case.md`, with status kept inside the document (`Status: draft | approved | shipped`) — `docs/README.md` is the authority.
 
 ### 4. Default and Custom Locations
 

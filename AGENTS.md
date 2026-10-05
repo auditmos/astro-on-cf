@@ -74,7 +74,7 @@ If `--with-db` was passed during `init-project`, you also get `db:generate:{dev,
 
 Prefer **deep modules** (Ousterhout): small interface hiding large implementation. Test at module boundaries, not internals. See `.claude/rules/deep-modules.md`.
 
-Technology-specific rules live in `.claude/rules/` and activate automatically when touching relevant files — `.claude/rules/frontend/astro.md`, `.claude/rules/frontend/tailwind-v4.md`, `.claude/rules/api/astro-endpoints.md`, `.claude/rules/api/cloudflare-workers.md`, `.claude/rules/cloudflare-deployment.md`, `.claude/rules/error-handling.md`, `.claude/rules/atomic-imports.md`, `.claude/rules/general.md`.
+Technology-specific rules live in `.claude/rules/` and load in every session — `.claude/rules/frontend/astro.md`, `.claude/rules/frontend/tailwind-v4.md`, `.claude/rules/api/astro-endpoints.md`, `.claude/rules/cloudflare-deployment.md`, `.claude/rules/error-handling.md`, `.claude/rules/atomic-imports.md`, `.claude/rules/general.md`.
 
 ## Cloudflare runtime
 

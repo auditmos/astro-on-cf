@@ -7,13 +7,12 @@ color: green
 
 ## Project Context & Rules
 
-@.claude/CLAUDE.md
+@AGENTS.md
 @.claude/rules/general.md
 @.claude/rules/deep-modules.md
 @.claude/rules/error-handling.md
 @.claude/rules/atomic-imports.md
 @.claude/rules/cloudflare-deployment.md
-@.claude/rules/api/cloudflare-workers.md
 @.claude/rules/api/astro-endpoints.md
 @.claude/rules/frontend/astro.md
 @.claude/rules/frontend/tailwind-v4.md

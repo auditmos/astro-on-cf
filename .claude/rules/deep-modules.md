@@ -15,15 +15,15 @@ Deep modules are more testable, more AI-navigable, and let you test at the bound
 
 | Layer | Module boundary | Interface | Hides |
 |-------|----------------|-----------|-------|
-| DB domain | `src/db/{domain}/index.ts` | Exported queries + types | Table defs, query builders, pagination |
-| API endpoint | `src/hono/api/{name}.ts` | HTTP routes | Validation, error mapping, business rules |
-| Component | `src/components/{feature}/` | Props + named export | State, mutations, UI logic |
-| Server fn | `src/core/functions/` | createServerFn signature | Auth, data fetching, transforms |
+| Domain module | `src/<domain>/index.ts` (`src/health/` is the example) | Exported functions + types | Validation, business rules, error mapping |
+| API endpoint | `src/pages/api/<name>.ts` | HTTP route | Nothing: it parses, delegates to the domain module, responds |
+| DB domain (with `--with-db`) | `src/db/{domain}/index.ts` | Exported queries + types | Table defs, query builders, pagination |
+| Component | `src/<feature>/` once a second page needs it | Props | Markup, local logic |
 
 ## Testing Corollary
 
 Test at the module boundary, not internals:
+- Domain modules: test the exported functions (`src/health/index.test.ts`)
+- Endpoints: `src/pages/**` is excluded from test discovery, so keep them thin and test the module beneath
 - DB: test exported query functions
-- API: test via HTTP requests
-- Components: test via user interactions (Testing Library)
 - If you must test an internal → the module should split

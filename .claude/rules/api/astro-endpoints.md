@@ -35,7 +35,7 @@ export const POST: APIRoute = async ({ request }) => {
 - Access Cloudflare bindings through `import { env } from "cloudflare:workers"` — typed via `worker-configuration.d.ts`.
 - Don't share request state via module-level mutables — Workers reuse isolates across requests.
 - For DB access, call `getDb()` (initialized once per isolate from `src/db/setup.ts` if the data layer is enabled).
-- Throw `AppError` for known failures; rely on the route to map them to status codes. Unexpected errors propagate to Astro's default error handler.
+- Known failures come back from the domain module as a typed error (see `HealthInputError` in `src/health/index.ts`); the route maps them to status codes. Unexpected errors propagate to Astro's default error handler.
 
 ## When to add Hono
 
@@ -49,5 +49,5 @@ In that case mount a single Hono instance under `src/pages/api/[...slug].ts` and
 ## Don't
 
 - Don't return raw strings without a `status` — the default 200 hides errors.
-- Don't `throw new Error("msg")` — use a typed `AppError` so callers can branch.
+- Don't `throw new Error("msg")` — use a typed error class so callers can branch.
 - Don't read `process.env` — Cloudflare Workers don't expose it. Use `import { env } from "cloudflare:workers"`.
