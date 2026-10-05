@@ -24,8 +24,8 @@
 
 ## Agents
 
-- [dd-i](.claude/agents/dd-i.md): Use this agent when the user wants to implement a feature or system based on an existing design document, implementation plan, or specification file.
-- [dd-w](.claude/agents/dd-w.md): Use this agent when the user requests design documentation, architecture documents, technical specifications, system design writeups, or implementation guides.
+- [dd-i](.claude/agents/dd-i.md): Use this agent when the user wants to implement a feature or system from an existing design document, implementation plan, or specification file — a detailed doc that has to become code across multiple files.
+- [dd-w](.claude/agents/dd-w.md): Use this agent when the user requests design documentation, architecture documents, technical specifications, system design writeups, or implementation guides that should be persisted as a markdown file — from high-level overviews to detailed implementation plans.
 - [mvp-e](.claude/agents/mvp-e.md): MVP development advisor.
 
 ## Commands
