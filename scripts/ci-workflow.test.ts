@@ -14,7 +14,13 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parse } from "yaml";
 
-type Step = { name?: string; run?: string; uses?: string; with?: Record<string, unknown> };
+type Step = {
+	name?: string;
+	run?: string;
+	uses?: string;
+	with?: Record<string, unknown>;
+	env?: Record<string, unknown>;
+};
 type Job = { steps?: Step[] };
 type Workflow = {
 	on?: Record<string, unknown>;
@@ -160,5 +166,43 @@ describe("majors-report workflow", () => {
 
 	it("does not install git hooks into the runner", () => {
 		expect(majors.env?.SKIP_SIMPLE_GIT_HOOKS).toBe("1");
+	});
+});
+
+/**
+ * The compat-date workflow.
+ *
+ * It bumped straight to today and failed every week from 2026-10-19: the adapter's
+ * workerd refused any date past its own. The target now comes from
+ * `scripts/compat-date.ts`, which caps it at the oldest installed runtime — so the
+ * plan has to run after the install, and every later step has to use its target.
+ */
+describe("compat-date workflow", () => {
+	const compat = readWorkflow("compat-date.yml");
+	const all = steps(compat);
+	const indexOfRun = (command: string) => all.findIndex((step) => step.run?.includes(command));
+
+	it.each(REQUIRED_CHECKS)("validates the bump with the %s", (_label, command) => {
+		expect(runsCommand(compat, command)).toBe(true);
+	});
+
+	it("plans after installing, since the cap reads the installed workerd runtimes", () => {
+		const install = indexOfRun("pnpm install");
+		expect(install).toBeGreaterThanOrEqual(0);
+		expect(indexOfRun("scripts/compat-date.ts")).toBeGreaterThan(install);
+	});
+
+	it("writes the planned target into wrangler.jsonc", () => {
+		const bump = all.find((step) => step.run?.includes("wrangler.jsonc"));
+		expect(String(bump?.env?.TARGET)).toContain("steps.plan.outputs.target");
+	});
+
+	it("never bumps straight to today", () => {
+		const source = readFileSync(resolve(WORKFLOW_DIR, "compat-date.yml"), "utf8");
+		expect(source).not.toMatch(/outputs\.today/);
+	});
+
+	it("does not install git hooks into the runner", () => {
+		expect(compat.env?.SKIP_SIMPLE_GIT_HOOKS).toBe("1");
 	});
 });
