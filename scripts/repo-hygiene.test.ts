@@ -116,45 +116,23 @@ describe("dependency ranges", () => {
 });
 
 /**
- * Names knip reports as unlisted dependencies that are not packages at all, but
- * runtime module namespaces — `cloudflare:workers` resolves to "cloudflare".
- *
- * The audit read the `cloudflare` entry as a leftover copied from a sibling
- * template. It is not: that entry and the first `cloudflare:workers` import landed
- * in the same commit, and deleting it turns knip red on two live imports. So the
- * entry stays and the invariant moves one level down — an ignored namespace must
- * still have a source file importing from it. That is what makes a genuinely stale
- * entry fail instead of linger, which is what the ignore-hygiene rule was after.
+ * knip 6.31 resolved `cloudflare:workers` to an unlisted "cloudflare" package, so
+ * this test once exempted that one undeclared entry. By 6.48, this repository's
+ * floor, knip knows the runtime namespace, the entry is gone, and a re-added one
+ * fails the check below like any other name this repository does not declare.
  */
-const RUNTIME_NAMESPACES = ["cloudflare"];
-
-const SOURCE_FILES = readdirSync(resolve(ROOT, "src"), { recursive: true, withFileTypes: true })
-	.filter((entry) => entry.isFile())
-	.map((entry) => resolve(entry.parentPath, entry.name));
-
-function filesImporting(namespace: string): string[] {
-	return SOURCE_FILES.filter((file) => readFileSync(file, "utf8").includes(`"${namespace}:`));
-}
-
 describe("dead-code configuration", () => {
 	const declared = new Set([
 		...Object.keys(packageJson.dependencies ?? {}),
 		...Object.keys(packageJson.devDependencies ?? {}),
 	]);
 	const ignored = knipConfig.ignoreDependencies ?? [];
-	const packages = ignored.filter((name) => !RUNTIME_NAMESPACES.includes(name));
-	const namespaces = ignored.filter((name) => RUNTIME_NAMESPACES.includes(name));
 
-	it("ignores something, so the checks below are not vacuous", () => {
+	it("ignores something, so the check below is not vacuous", () => {
 		expect(ignored.length).toBeGreaterThan(0);
 	});
 
-	it.each(packages)("ignores %s only because this repository declares it", (name) => {
+	it.each(ignored)("ignores %s only because this repository declares it", (name) => {
 		expect([...declared]).toContain(name);
-	});
-
-	it.each(namespaces)("ignores the %s: namespace only while something imports it", (name) => {
-		expect(declared.has(name)).toBe(false);
-		expect(filesImporting(name)).not.toEqual([]);
 	});
 });
