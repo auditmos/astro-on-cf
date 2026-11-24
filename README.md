@@ -45,6 +45,7 @@ The app runs on http://localhost:3000.
 |--------|---------|
 | `pnpm dev` | Dev server on port 3000 (Astro + Vite) |
 | `pnpm build` | Production build to `./dist` |
+| `pnpm perf:report` | Report raw and Brotli sizes of built client JS and CSS after `pnpm build` |
 | `pnpm preview` | Preview the production build locally |
 | `pnpm deploy:dev` / `pnpm deploy:staging` / `pnpm deploy:production` | Build and deploy to the named Cloudflare environment |
 | `pnpm cf-typegen` | Generate `Env` types from `wrangler.jsonc` |
@@ -58,6 +59,8 @@ The app runs on http://localhost:3000.
 | `pnpm release` | semantic-release (CI only) |
 
 If you opted into the data layer with `--with-db`, you also get `db:generate:{dev,staging,production}`, `db:migrate:*`, `db:pull:*`, `db:studio`, and `db:seed:*` — all wired through `@dotenvx/dotenvx`.
+
+CI publishes the client asset report in the job summary after each build. It counts each emitted JS and CSS file in `dist/client` once, including chunks used only by some routes. To measure a specific route's first view, check a cold browser load of `pnpm preview` for the files it requests and any JS or CSS inlined in the HTML.
 
 ## Project Structure
 

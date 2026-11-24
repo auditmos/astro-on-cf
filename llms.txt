@@ -19,7 +19,7 @@
 - [Astro API Endpoints](.claude/rules/api/astro-endpoints.md): File layout, Handler shape, Conventions, When to add Hono, Don't
 
 ### frontend
-- [Astro](.claude/rules/frontend/astro.md): Pages, layouts, components, Server vs client, API endpoints, Cloudflare runtime access (Astro v6 + `@astrojs/cloudflare` v13), Data fetching, Content collections (when adding markdown), Generated files — never edit
+- [Astro](.claude/rules/frontend/astro.md): Pages, layouts, components, Server vs client, Loading on demand, API endpoints, Cloudflare runtime access (Astro v6 + `@astrojs/cloudflare` v13), Data fetching, Content collections (when adding markdown), Generated files — never edit
 - [Tailwind CSS v4](.claude/rules/frontend/tailwind-v4.md): Setup in this template, Customizing the theme, Custom utilities, Variants & states, Don't
 
 ## Agents

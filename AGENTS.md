@@ -30,7 +30,7 @@ Astro (SSR) on Cloudflare Workers, with Tailwind v4 and an optional Drizzle + Ne
 - `src/middleware.ts` — the one middleware: renders, then applies the header baseline. No policy of its own
 - `src/security-headers/` — that baseline. Changing a header is an edit here and nowhere else
 - `src/layouts/` — shared layouts wrapping page slots
-- `src/styles/globals.css` — Tailwind v4 entry (`@import "tailwindcss";`)
+- `src/styles/globals.css` — Tailwind v4 entry, with source detection scoped to `src/`
 - `src/env.d.ts` — declares `App.Locals` typed against Cloudflare `Env`
 - `docs/` — business requirements and design docs
 - `plans/` — phased implementation plans, one per PRD
@@ -46,6 +46,7 @@ one; there is no empty directory waiting for them. Same for domain modules — a
 ```bash
 pnpm dev                  # dev server on http://localhost:3000
 pnpm build                # production build to ./dist
+pnpm perf:report          # report build output size for client JS and CSS
 pnpm preview              # preview the production build locally
 pnpm deploy:dev           # build + wrangler deploy --env dev
 pnpm deploy:staging       # build + wrangler deploy --env staging

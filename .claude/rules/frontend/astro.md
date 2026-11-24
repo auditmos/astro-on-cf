@@ -14,6 +14,11 @@
 - Hydrate islands with `client:load`, `client:idle`, `client:visible`, `client:media`, `client:only="<framework>"`. Default is **no JS shipped** — only add directives when you need client interactivity.
 - This template has no framework integrations (React/Vue/Svelte) by default. Add them with `pnpm astro add react` (etc.) when you actually need an island.
 
+## Loading on demand
+
+- Use `client:visible` for heavy islands below the fold. For a tool opened on demand, load its module with `import()` when the control is activated and check that a first keyboard or touch activation works.
+- When a project has likely next destinations, enable `prefetch: true` and mark those internal links with `data-astro-prefetch`. The default strategy prefetches on hover or focus. Compare cold and warm navigation before marking more links.
+
 ## API endpoints
 
 - File: `src/pages/api/<name>.ts`. Export `const GET`, `POST`, `PUT`, `PATCH`, `DELETE` as named functions of type `APIRoute`.

@@ -73,6 +73,15 @@ describe("ci workflow", () => {
 		expect(runsCommand(ci, command)).toBe(true);
 	});
 
+	it("reports client asset sizes after the build in the checks job", () => {
+		const commands = ci.jobs?.checks?.steps?.map((step) => step.run) ?? [];
+		const build = commands.indexOf("pnpm run build");
+		const report = commands.findIndex((run) => run?.includes("run perf:report"));
+		expect(build).toBeGreaterThanOrEqual(0);
+		expect(report).toBeGreaterThan(build);
+		expect(commands[report]).toContain("$GITHUB_STEP_SUMMARY");
+	});
+
 	it("does not install git hooks into the runner", () => {
 		expect(ci.env?.SKIP_SIMPLE_GIT_HOOKS).toBe("1");
 	});

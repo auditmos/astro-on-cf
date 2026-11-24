@@ -3,7 +3,7 @@
 ## Setup in this template
 
 - Plugin: `@tailwindcss/vite` registered in `astro.config.mjs` under `vite.plugins`.
-- Entry CSS: `src/styles/globals.css` contains `@import "tailwindcss";` — import this once from a top-level layout.
+- Import `src/styles/globals.css` once from a top-level layout. `source("../")` limits auto-detection to `src/`, so examples in repo docs and scripts stay out of the generated CSS. Use `@source` for class names defined outside `src/`.
 - **No `tailwind.config.{js,ts}` file.** v4 reads theme tokens directly from CSS via `@theme`.
 
 ## Customizing the theme
@@ -11,7 +11,7 @@
 Add tokens inside `src/styles/globals.css`:
 
 ```css
-@import "tailwindcss";
+@import "tailwindcss" source("../");
 
 @theme {
 	--color-brand: oklch(0.72 0.15 250);

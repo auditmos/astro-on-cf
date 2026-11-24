@@ -70,3 +70,6 @@ jobs:
       # Vite plugin) passes every check above and fails only here.
       - name: Build
         run: pnpm run build
+
+      - name: Report client asset sizes
+        run: pnpm --silent run perf:report >> "$GITHUB_STEP_SUMMARY"
