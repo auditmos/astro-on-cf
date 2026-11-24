@@ -107,6 +107,7 @@
 			"**",
 			"!**/node_modules",
 			"!**/dist",
+			"!**/coverage",
 			"!**/.astro",
 			"!**/.wrangler",
 			"!**/.cache",
