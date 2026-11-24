@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/auditmos/astro-on-cf/compare/v1.7.0...v1.7.1) (2026-11-24)
+
+
+### Performance Improvements
+
+* trim template CSS and report client asset sizes ([a057d33](https://github.com/auditmos/astro-on-cf/commit/a057d33b3be403a176c812392ba214181a8f942b))
+
 # [1.7.0](https://github.com/auditmos/astro-on-cf/compare/v1.6.0...v1.7.0) (2026-08-08)
 
 
