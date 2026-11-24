@@ -60,9 +60,6 @@
 		"wrangler": "^4.118.0",
 		"yaml": "^2.9.0"
 	},
-	"overrides": {
-		"vite": "^7.3.6"
-	},
 	"simple-git-hooks": {
 		"pre-commit": "pnpm run lint:ci",
 		"pre-push": "pnpm run types && pnpm run knip"
